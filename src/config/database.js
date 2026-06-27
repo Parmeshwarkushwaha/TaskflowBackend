@@ -1,24 +1,16 @@
 const mongoose = require('mongoose');
 
 const connectDatabase = async () => {
-//   const databaseUrl = process.env.MONGODB_URI;
+  const databaseUrl = process.env.MONGO_URI || process.env.MONGODB_URI;
 
-//   if (!databaseUrl) {
-//     throw new Error('MONGODB_URI is required in environment variables');
-//   }
+  if (!databaseUrl) {
+    throw new Error('MongoDB connection string is missing');
+  }
 
-//   await mongoose.connect(databaseUrl, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   });
-try {
-    await mongoose.connect(process.env.MONGO_URI)
-    console.log("mongodb connected successfully");
-    
-} catch (error) {
-    console.log(error);
-    
-}
+  await mongoose.connect(databaseUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
 };
 
 module.exports = connectDatabase;
