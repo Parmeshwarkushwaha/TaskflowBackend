@@ -18,25 +18,14 @@ const notFoundHandler = require('./src/middleware/notFoundHandler');
 
 const app = express(); 
 const PORT = process.env.PORT || 5000;
-const allowedOrigins = [
-  process.env.CLIENT_URL,
-  "http://localhost:3000",
-];
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true,
+}));
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
 app.use(express.json());
 
+console.log("CLIENT_URL:", process.env.CLIENT_URL);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/boards', boardRoutes);
@@ -45,6 +34,9 @@ app.use('/api/ai', aiRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
+app.get("/",(req,res)=>{
+  res.send(process.env.CLIENT_URL)
+})
 
 connectDatabase()
   .then(() => {
